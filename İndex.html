@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hava Durumu Uygulaması</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css" integrity="sha512-SbiR/eusphKoMVVXysTKG/7VseWii+Y3FdHrt0EpKgpToZeemhqHeZeLWLhJutz/2ut2Vw1uQEj2MbRF+TVBUA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <div class="container my-5">
+        <h1 class="text-center mb-4">Hava Durumu</h1>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form id="frmHava" class="input-group mb-3">
+                    <input type="text" id="sehir" class="form-control" placeholder="Yer adı" aria-label="Yer adı" required>
+                    <button class="btn btn-primary" type="submit">Hava Durumunu Öğren</button>
+                </form>
+                <div id="sonuc" class="text-center">
+                    <div id="ikon"></div>
+                    <div id="ad"></div>
+                    <div id="sicaklik"></div>
+                    <div id="aciklama"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.bundle.min.js" integrity="sha512-i9cEfJwUwViEPFKdC1enz4ZRGBj8YQo6QByFTF92YXHi7waCqyexvRD75S5NVTsSiTv7rKWqG9Y5eFxmRsOn0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        const frmHava = document.getElementById("frmHava");
+        const txtSehir = document.getElementById("sehir");
+        const divIkon = document.getElementById("ikon");
+        const divAd = document.getElementById("ad");
+        const divSicaklik = document.getElementById("sicaklik");
+        const divAciklama = document.getElementById("aciklama");
+
+        // form gönderilmek istendiğinde
+        frmHava.onsubmit = function (event) {
+            event.preventDefault(); // formun gönderilmesi önler.
+            havaDurumunuGetir();
+        };
+
+        function havaDurumunuGetir() {
+            let sehir = txtSehir.value;
+            let url = `https://api.openweathermap.org/data/2.5/weather?q=${sehir}&appid=b78eb571907ed62c7da9af791419fdaa&units=metric&lang=tr`;
+
+            fetch(url)
+                .then(res => res.json())
+                .then(data => havaDurumunuGoster(data));
+        }
+
+        function havaDurumunuGoster(veri) {
+            let imgUrl = `https://openweathermap.org/img/wn/${veri.weather[0].icon}@2x.png`
+            let img = document.createElement("img");
+            img.src = imgUrl;
+            divIkon.innerHTML = "";
+            divIkon.appendChild(img);
+            divAd.textContent = veri.name;
+            divSicaklik.textContent = veri.main.temp + "C";
+            divAciklama.textContent = veri.weather[0].description;
+        }
+        txtSehir.value = "istanbul";
+        havaDurumunuGetir();
+    </script>
+</body>
+
+</html>
